@@ -1,0 +1,1456 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#102d49">
+    <meta name="description"
+        content="DBM Session 04: a 100-minute guided first EF Core Inventory query, adapted from Practical EF Core 10. Includes a starter, hints, simulations and SQL inspection.">
+    <title>DBM · Session 04 · Your first EF Core query</title>
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./css/session04.css?v=2bd92b75b742">
+    <script defer src="./js/simulation.js?v=208e728b91cc"></script>
+    <script defer src="./js/session04.js?v=f536f0d5a704"></script>
+    <script defer src="./js/code-guide.js?v=4f552fe1e595"></script>
+    <script defer src="./js/concepts.js?v=9de8bd23643a"></script>
+</head>
+
+<body class="s4"><a class="skip-link" href="#s4-content">Skip to learning content</a>
+    <div class="shell"><button id="s4-scrim" class="scrim mobile-scrim" aria-label="Close navigation" hidden></button>
+        <aside class="sidebar" id="s4-sidebar" aria-label="Lesson navigation">
+            <div class="brand"><span class="brand-mark" aria-hidden="true">▤</span>
+                <div><small>TVET INTERACTIVE</small><strong>CODELAB STUDIO</strong></div><button
+                    class="icon-button close-menu icon-btn" id="s4-close" aria-label="Close navigation">×</button>
+            </div>
+            <div class="course-block"><span class="course-code">DBM · PDB2 · 2026–2027</span>
+                <h2>Database<br>Management</h2>
+                <p>04 / Your first EF Core query</p>
+                <div class="progress-heading"><span>Lesson progress</span><strong id="s4-progress-text">0 / 8</strong>
+                </div>
+                <div class="progress-bar" id="s4-progress" role="progressbar" aria-label="Completed lesson steps"
+                    aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+                    <div id="s4-progress-fill"></div>
+                </div>
+            </div>
+            <nav aria-label="Lesson sections">
+                <ol class="step-nav">
+                    <li><button class="step-link" data-step="0" aria-controls="s4-panel-0"><span
+                                class="step-num">01</span><span>Recall the ADO.NET workflow<small>8
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="1" aria-controls="s4-panel-1"><span
+                                class="step-num">02</span><span>ORM and two starting points<small>20
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="2" aria-controls="s4-panel-2"><span
+                                class="step-num">03</span><span>Open the book-based starter<small>10
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="3" aria-controls="s4-panel-3"><span
+                                class="step-num">04</span><span>Build the Item entity<small>18 min</small></span><span
+                                class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="4" aria-controls="s4-panel-4"><span
+                                class="step-num">05</span><span>Configure the context<small>12 min</small></span><span
+                                class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="5" aria-controls="s4-panel-5"><span
+                                class="step-num">06</span><span>Run the first async query<small>16
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="6" aria-controls="s4-panel-6"><span
+                                class="step-num">07</span><span>Follow the SQL and objects<small>8
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                    <li><button class="step-link" data-step="7" aria-controls="s4-panel-7"><span
+                                class="step-num">08</span><span>Review, practise and submit<small>8
+                                    min</small></span><span class="tick" aria-hidden="true">✓</span></button></li>
+                </ol>
+            </nav>
+            <div class="sidebar-resources"><span>QUICK RESOURCES</span><a href="downloads/LINQ_Quick_Reference.pdf"
+                    id="s4-linq-reference" target="_blank" rel="noopener">↗ LINQ quick reference · PDF</a><a
+                    href="#s4-sources" id="s4-source-link">↗
+                    Sources &amp; downloads</a><a href="downloads/EF10_Session04_Student_Starter.zip" download>↓ Student
+                    starter</a><button id="s4-reset">↺ Reset this session</button><small id="s4-storage-status">Progress
+                    and notes save on this device.</small></div>
+            <div class="sidebar-foot">UNRWA Gaza Training Centre<br>Programming and Database Level 2<br>Eng. Abeer
+                Elaydi</div>
+        </aside>
+        <div class="workspace">
+            <header class="topbar"><button class="icon-button menu-button icon-btn menu-btn" id="s4-menu"
+                    aria-label="Open lesson navigation" aria-controls="s4-sidebar" aria-expanded="false">☰</button>
+                <div class="breadcrumb">DATABASE MANAGEMENT <span>/</span> <b>SESSION 04</b></div>
+                <div class="top-actions"><span class="time-pill">◷ 100 MIN</span><button class="icon-button icon-btn"
+                        id="s4-theme" aria-label="Switch to dark theme" aria-pressed="false">◐</button></div>
+            </header>
+            <main id="s4-content" class="main" tabindex="-1">
+                <section class="lesson active" id="s4-panel-0" aria-labelledby="s4-title-0">
+                    <div class="hero hero-intro">
+                        <div class="hero-main"><span class="eyebrow">TVET INTERACTIVE CODELAB STUDIO · SESSION 04</span>
+                            <h1>Your first<br><em>EF Core query</em></h1>
+                            <p>One small model. One real query.<br>See the SQL behind the objects.</p>
+                            <div class="chips"><span>DBM · PDB2</span><span>EF Core 10</span><span>100 minutes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-head"><span class="section-kicker">STEP 01 / 08 · 8 MINUTES</span>
+                        <h1 id="s4-title-0" tabindex="-1">Recall the ADO.NET workflow</h1>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>Same database task, a new way to express it</strong>
+                            <p>In ADO.NET, you opened a connection, executed SQL and read column values. Today you will
+                                use EF Core to read the book’s Inventory data as C# objects. First discover the mapping
+                                and the two ways an EF project can begin; then build and run your first inventory
+                                report.</p>
+                        </div>
+                    </aside>
+                    <div class="card s2-card">
+                        <h2>Today’s outcome</h2>
+                        <p>The inventory owner wants a readable list of movie titles in alphabetical order. Complete a
+                            prepared Console application that reads <code>dbo.Items</code> using EF Core and explains
+                            the SQL it generates.</p>
+                        <ul>
+                            <li>Distinguish ORM, EF Core and the providers, and compare Database First with Code First.
+                            </li>
+                            <li>Define an <code>Item</code> with two mapped properties and identify its key.</li>
+                            <li>Expose <code>DbSet&lt;Item&gt;</code>, configure <code>UseSqlServer</code> and retrieve
+                                a <code>List&lt;Item&gt;</code> asynchronously.</li>
+                            <li>Show generated SQL, compare the results with SSMS and explain when rows are fetched.
+                            </li>
+                        </ul>
+                    </div>
+                    <h2>Recall before you build</h2>
+                    <p>Answer all four questions, then check your answers. This is formative feedback; it does not lock
+                        the lesson.</p>
+                    <div class="quiz" id="s4-warmup"></div>
+                    <div class="card s2-card">
+                        <h2>Before class</h2>
+                        <p>You should already recognise <code>SqlConnection</code>, <code>SqlCommand</code>, typed
+                            parameters, <code>SqlDataReader</code> and a SQL primary key. You need a working SQL Server
+                            instance, SSMS, the .NET 10 SDK and an editor/Visual Studio with .NET 10 support. Restore
+                            packages before class when possible.</p>
+                        <p>All code and images are local. The codelab works offline after download; first NuGet restore
+                            and official reference links need internet.</p>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Step</th>
+                                    <th scope="col">Focus</th>
+                                    <th scope="col">Minutes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01</td>
+                                    <td>Recall the ADO.NET workflow</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>02</td>
+                                    <td>ORM and two starting points</td>
+                                    <td>20</td>
+                                </tr>
+                                <tr>
+                                    <td>03</td>
+                                    <td>Open the book-based starter</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>04</td>
+                                    <td>Build the Item entity</td>
+                                    <td>18</td>
+                                </tr>
+                                <tr>
+                                    <td>05</td>
+                                    <td>Configure the context</td>
+                                    <td>12</td>
+                                </tr>
+                                <tr>
+                                    <td>06</td>
+                                    <td>Run the first async query</td>
+                                    <td>16</td>
+                                </tr>
+                                <tr>
+                                    <td>07</td>
+                                    <td>Follow the SQL and objects</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>08</td>
+                                    <td>Review, practise and submit</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>100</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><label class="check"><input type="checkbox" data-save="ready" id="s4-ready"><span>I can
+                            identify the connection, command, reader and primary key from the previous
+                            lessons.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev disabled>←
+                            Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="0">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-1" aria-labelledby="s4-title-1" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 02 / 08 · 20 MINUTES</span>
+                        <h1 id="s4-title-1" tabindex="-1">Understand ORM and choose a starting point</h1>
+                        <p class="intro-line">Follow one inventory row into C#, then see the two ways an EF project can
+                            begin.</p>
+                    </div>
+                    <div class="card s2-card"><span class="task-tag">THE REQUIREMENT</span>
+                        <h2>Find a title in the inventory</h2>
+                        <p>The owner asks: “Show my movie titles alphabetically.”<br>SQL Server stores rows in
+                            <code>dbo.Items</code>. Our application needs <code>Item</code> objects with values it can
+                            read and print.
+                        </p>
+                        <p>In ADO.NET, we wrote the reader loop and assignments. An <b>object-relational mapper</b> uses
+                            a model describing how relational data corresponds to objects.</p>
+                    </div>
+                    <article class="card s2-card s4-schema-map" aria-labelledby="s4-schema-title">
+                        <span class="section-kicker">CONTEXT · ENTITY · TABLE</span>
+                        <h2 id="s4-schema-title">Connect the C# model to the SQL table</h2>
+                        <div class="s4-schema-context">
+                            <b>InventoryDbContext</b><code>public DbSet&lt;Item&gt; Items { get; set; }</code><span>Use
+                                <code>db.Items</code> to build a query for Item entities.</span></div>
+                        <div class="s4-schema-grid">
+                            <div class="s4-schema-type"><span>C# ENTITY TYPE</span>
+                                <h3>Item</h3>
+                                <div class="s4-schema-field s4-schema-id"><code>int Id</code><small>Key property</small>
+                                </div>
+                                <div class="s4-schema-field s4-schema-name"><code>string Name</code><small>Text
+                                        property</small></div>
+                            </div>
+                            <div class="s4-schema-links"
+                                aria-label="The entity maps to a table and properties map to columns"><b>maps
+                                    to</b><span>Id ↔ Id</span><span>Name ↔ Name</span></div>
+                            <div class="s4-schema-table"><span>SQL SERVER TABLE</span>
+                                <h3>dbo.Items</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Column</th>
+                                            <th scope="col">Definition</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="s4-schema-id">
+                                            <th scope="row">Id</th>
+                                            <td>int · identity · primary key</td>
+                                        </tr>
+                                        <tr class="s4-schema-name">
+                                            <th scope="row">Name</th>
+                                            <td>nvarchar(100) · NOT NULL</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p><b>Type → table. Property → column. Returned row → object.</b> The <code>Items</code> DbSet
+                            name supplies the table-name convention here. A <code>DbSet&lt;Item&gt;</code> is a query
+                            entry point, not a list that already contains every stored row.</p>
+                        <p class="small">EF builds mapping metadata from the model and configuration. Creating the model
+                            does not check or change our existing database schema. It must match the prepared table.</p>
+                    </article>
+                    <div class="prediction"><label for="s4-mapping-prediction"><b>Explain the mapping</b> <br> · Select
+                            a row in the trace below. Which property receives each column value? Identify the ADO.NET
+                            assignment lines that EF Core replaces with model-based mapping.</label><textarea
+                            id="s4-mapping-prediction" data-save="mapping-prediction" rows="3"
+                            placeholder="Explain the mapping in one sentence…"></textarea><small>Saved on this device.
+                            Compare your explanation with the trace.</small></div>
+                    <article class="s4-orm-lab card s2-card" aria-labelledby="s4-orm-lab-title">
+                        <div class="s4-lab-heading"><span class="section-kicker">SELECT → TRACE → EXPLAIN</span>
+                            <h2 id="s4-orm-lab-title">One row becomes one Item object</h2>
+                            <p class="small"><b>Simulated database.</b> A fixed snapshot of the five book titles. This
+                                illustration does not run EF Core or contact SQL Server.</p>
+                        </div>
+                        <label class="s4-field-label" for="s4-orm-row">Choose the row to follow</label><select
+                            id="s4-orm-row"></select>
+                        <div class="s4-orm-grid">
+                            <div>
+                                <h3>Relational data</h3><span class="s4-mini-label">dbo.Items · selected result
+                                    row</span>
+                                <div class="s4-row-values s4-selected-row">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Id <small>int · primary key</small></th>
+                                                <th scope="col">Name <small>nvarchar(100) · NOT NULL</small></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong id="s4-row-id"></strong></td>
+                                                <td><strong id="s4-row-name"></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="s4-mapping-bridge" aria-label="Mapping connects columns to properties"><svg
+                                    viewBox="0 0 90 40" aria-hidden="true">
+                                    <path d="M5 20h70m-12-11 12 11-12 11" fill="none" stroke="currentColor"
+                                        stroke-width="3" />
+                                </svg><b>Mapping</b><span>Id ↔ Id<br>Name ↔ Name</span></div>
+                            <div>
+                                <h3>Application data</h3><span class="s4-mini-label">Item · one object in memory</span>
+                                <div id="s4-object-view" class="s4-object-view"></div>
+                            </div>
+                        </div>
+                        <ol class="s4-trace-controls" aria-label="Row to object stages">
+                            <li><button type="button" data-s4-orm-stage="0">1 · Inspect the row</button></li>
+                            <li><button type="button" data-s4-orm-stage="1">2 · Read the mapping</button></li>
+                            <li><button type="button" data-s4-orm-stage="2">3 · Materialise the object</button></li>
+                        </ol>
+                        <div class="s4-live-explanation" id="s4-orm-explanation" role="status" aria-live="polite"></div>
+                        <p class="small">These stages separate the ideas for learning. In a real query, EF Core
+                            processes returned values while reading the results. The object representation shown here is
+                            illustrative, not EF-generated source code.</p>
+                    </article>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>ORM is the approach; EF Core is the framework</strong>
+                            <p><b>Object</b>: an <code>Item</code> instance in C#. <b>Relational</b>: a row in the SQL
+                                Server table. <b>Mapping</b>: the correspondence between their properties and columns.
+                                EF Core implements this approach; SQL Server still executes the SQL.</p>
+                        </div>
+                    </aside>
+                    <article class="card s2-card" aria-labelledby="s4-compare-title">
+                        <h2 id="s4-compare-title">Who writes the row-to-property assignments?</h2>
+                        <p>Compare the same report after the connection or context has been configured. The EF model and
+                            configuration still exist in other files.</p>
+                        <div class="actions" role="group" aria-label="Compare query code"><button class="s2-btn primary"
+                                type="button" data-s4-compare="ado" aria-pressed="true">ADO.NET · write the mapping
+                                loop</button><button class="s2-btn" type="button" data-s4-compare="ef"
+                                aria-pressed="false">EF Core · use the model</button></div>
+                        <div id="s4-compare-ado">
+                            <div class="code-shell">
+                                <div class="code-head"><span>ADO.NET comparison · connection is already
+                                        open</span><button class="copy copy-btn" type="button">Copy code</button></div>
+                                <pre tabindex="0"><code>using var command = new SqlCommand(
+    &quot;SELECT Id, Name FROM dbo.Items ORDER BY Name;&quot;, connection);
+using var reader = await command.ExecuteReaderAsync();
+List&lt;Item&gt; items = new();
+while (await reader.ReadAsync())
+{
+    Item item = new Item();
+    item.Id = reader.GetInt32(0);
+    item.Name = reader.GetString(1);
+    items.Add(item);
+}</code></pre>
+                            </div>
+                            <p>You create the command, advance the reader, choose getters, create objects and assign
+                                properties.</p>
+                        </div>
+                        <div id="s4-compare-ef" hidden>
+                            <div class="code-shell">
+                                <div class="code-head"><span>EF Core comparison · context and entity mapping are already
+                                        configured</span><button class="copy copy-btn" type="button">Copy code</button>
+                                </div>
+                                <pre tabindex="0"><code>var query = db.Items.OrderBy(item =&gt; item.Name);
+List&lt;Item&gt; items = await query.ToListAsync();</code></pre>
+                            </div>
+                            <p>The model tells EF Core how <code>Items</code>, <code>Id</code> and <code>Name</code>
+                                correspond to the entity. The awaited query returns a list of mapped objects. The
+                                shorter query relies on that preparation.</p>
+                        </div>
+                        <details class="s2-details s4-code-guide">
+                            <summary>Optional line guide for the ADO.NET comparison</summary>
+                            <div class="reveal">
+                                <p class="small">Choose a line to see what it does, why it exists and its source. Use ↑
+                                    and ↓ within the code to move between lines.</p>
+                                <div class="s4-code-tour" data-s4-code-tour="ado"></div>
+                            </div>
+                        </details>
+                    </article>
+                    <article class="card s2-card" aria-labelledby="s4-workflow-title"><span class="task-tag">TWO
+                            STARTING POINTS</span>
+                        <h2 id="s4-workflow-title">Which side drives the database structure?</h2>
+                        <p>Both approaches use EF Core entities, a <code>DbContext</code> and queries. The difference is
+                            how the model and database schema are established and kept in step.</p>
+                        <div class="actions" role="group" aria-label="Choose an EF Core workflow"><button
+                                class="s2-btn primary" type="button" data-s4-workflow="database"
+                                aria-pressed="true">Database First</button><button class="s2-btn" type="button"
+                                data-s4-workflow="code" aria-pressed="false">Code First</button></div>
+                        <p id="s4-workflow-intro"></p>
+                        <ol class="s4-workflow-stages" id="s4-workflow-stages" aria-label="Selected workflow stages">
+                        </ol>
+                        <div class="s4-live-explanation" id="s4-workflow-detail" role="status" aria-live="polite"></div>
+                        <div class="actions"><button class="s2-btn" type="button" id="s4-workflow-prev">Previous
+                                stage</button><button class="s2-btn primary" type="button" id="s4-workflow-next">Next
+                                stage</button></div>
+                        <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                            aria-label="Compare EF Core approaches">
+                            <table class="s2-table">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Database First</th>
+                                        <th>Code First</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>What drives the structure?</td>
+                                        <td>The database schema.</td>
+                                        <td>The EF Core model in code.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Common tool</td>
+                                        <td>Reverse engineering generates entity classes and a context from the schema.
+                                        </td>
+                                        <td>Migrations describe schema changes based on model changes.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>When structure changes</td>
+                                        <td>Update the database through the agreed process, then update or regenerate
+                                            the mapping.</td>
+                                        <td>Change the model, create and review a migration, then apply it through the
+                                            agreed process.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Reading data afterwards</td>
+                                        <td colspan="2">Both can use the same
+                                            <code>db.Items.OrderBy(...).ToListAsync()</code> query.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="small">A new application often starts with Code First. An existing database often
+                            favours Database First. These are common starting patterns, not a rule based only on
+                            database age: Code First can also be adopted for an existing database with careful setup.
+                        </p>
+                    </article>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>Where this lecture starts</strong>
+                            <p>Our starting point is the <b>prepared Inventory database</b>. We write the tiny
+                                <code>Item</code> mapping by hand so you can understand it. That is an existing-database
+                                exercise, not an automatic reverse-engineering exercise. Scaffolding can generate the
+                                mapping; migrations can manage a schema from code. Today we explain both routes and run
+                                the query.
+                            </p>
+                        </div>
+                    </aside>
+                    <div class="s4-decision card s2-card">
+                        <h2>Choose the route</h2>
+                        <fieldset>
+                            <legend>The database team owns the SQL schema and asks you to add a C# application. Which
+                                workflow naturally treats that schema as authoritative?</legend>
+                            <div class="actions"><button class="s2-btn" type="button" data-s4-decision="database"
+                                    aria-pressed="false">Database First</button><button class="s2-btn" type="button"
+                                    data-s4-decision="code" aria-pressed="false">Code First</button></div>
+                        </fieldset>
+                        <p id="s4-decision-result" role="status" aria-live="polite">Choose, then explain where the
+                            mapping comes from.</p>
+                    </div>
+                    <details class="s2-details">
+                        <summary>Where do the books and our example start?</summary>
+                        <div class="reveal">
+                            <p><b>Practical Entity Framework Core 10:</b> Chapter 1 establishes the setup; Chapter 2
+                                reverse-engineers an existing database; Chapter 3 introduces Code First. Activity 03-02
+                                starts the Inventory project with Code First.</p>
+                            <p><b>EF Core in Action:</b> Chapter 1, Section 1.7 explains the two approaches and starts
+                                its example with Code First.</p>
+                            <p><b>Our classroom adaptation:</b> the Item model, three project names, movie titles and
+                                ordered query come from Activity 03-02. We prepare the table with SQL instead of
+                                teaching its migrations now, and use Activity 01-01’s explicit options-builder pattern.
+                                The example’s origin and today’s setup are therefore different.</p>
+                        </div>
+                    </details>
+                    <label class="check"><input type="checkbox" data-save="orm-explained" id="s4-orm-explained"><span>I
+                            can connect a row, entity, object and mapping, and explain how Code First differs from
+                            Database First.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="1">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-2" aria-labelledby="s4-title-2" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 03 / 08 · 10 MINUTES</span>
+                        <h1 id="s4-title-2" tabindex="-1">Open the book-based starter</h1>
+                    </div>
+                    <div class="task-tag">SETUP · TODO 00</div>
+                    <div class="card s2-card">
+                        <h2>Start from the supplied book activities</h2>
+                        <p>This classroom starter adapts <b>Activity 01-01</b> (options and context configuration) and
+                            <b>Activity 03-02</b> (Inventory Manager’s model and query). It keeps the book’s project
+                            names, <code>Item</code>, <code>InventoryDbContext</code> and five titles.
+                        </p>
+                        <p>The original three-project organisation is prepared for you: one Console application and two
+                            Class Libraries. We use a small top-level Console entry point instead of introducing the
+                            book’s host and dependency-injection wiring now. The supplied SQL prepares the book’s
+                            two-column table so migrations can remain a later lesson.</p><a
+                            class="button s2-btn primary" href="downloads/EF10_Session04_Student_Starter.zip" download>↓
+                            Download student starter</a>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Project</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">File you will edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>EF10_InventoryModels</td>
+                                    <td>Defines what an Item is</td>
+                                    <td>Item.cs · TODO 01</td>
+                                </tr>
+                                <tr>
+                                    <td>EF10_InventoryDBLibrary</td>
+                                    <td>Holds the EF database context</td>
+                                    <td>InventoryDBContext.cs · TODO 02</td>
+                                </tr>
+                                <tr>
+                                    <td>EF10_InventoryManager</td>
+                                    <td>Runs the Console program</td>
+                                    <td>appsettings.json · TODO 00; Program.cs · TODOs 03–05</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h2>One solution contains three projects</h2>
+                    <p>A <b>solution</b> groups related projects. A <b>Console Application</b> runs the program. A
+                        <b>Class Library</b> contains reusable C# types and normally builds a DLL for another project to
+                        use; it has no application entry point of its own.
+                    </p>
+                    <div class="s4-project-grid" role="group" aria-label="Explore the prepared projects"><button
+                            class="s4-project-card" type="button" data-s4-project="console"
+                            aria-pressed="true"><span>CONSOLE
+                                APPLICATION</span><strong>EF10_InventoryManager</strong><small>Runs
+                                Program.cs</small></button><button class="s4-project-card" type="button"
+                            data-s4-project="data" aria-pressed="false"><span>CLASS
+                                LIBRARY</span><strong>EF10_InventoryDBLibrary</strong><small>Defines
+                                InventoryDbContext</small></button><button class="s4-project-card" type="button"
+                            data-s4-project="model" aria-pressed="false"><span>CLASS
+                                LIBRARY</span><strong>EF10_InventoryModels</strong><small>Defines Item</small></button>
+                    </div>
+                    <div id="s4-project-detail" class="s4-live-explanation" role="status" aria-live="polite"></div>
+                    <p><b>Reference direction:</b> the Console project references the database library; the database
+                        library references the model library. These references are already prepared. The Console project
+                        also receives the model types through that dependency chain in this SDK-style solution.</p>
+                    <p>A <code>ProjectReference</code> makes another project available to the build. A
+                        <code>using</code> directive lets this C# file use names from a namespace. They have different
+                        jobs. A NuGet package, such as the EF Core SQL Server provider, is an external dependency rather
+                        than one of our three projects.
+                    </p>
+                    <h2>Prepare, then verify</h2>
+                    <ol>
+                        <li>Extract the ZIP. Open <code>EF10InventoryManager.sln</code> and set
+                            <code>EF10_InventoryManager</code> as the startup project. With the CLI, work from the
+                            extracted solution folder.
+                        </li>
+                        <li>Check <code>dotnet --list-sdks</code> shows 10.x. Restore and build with the commands below.
+                        </li>
+                        <li>In SSMS on your classroom instance, run the complete <code>setup-inventory.sql</code> once.
+                            It creates <code>InventoryManagerDB_0302</code> and <code>dbo.Items</code> if missing,
+                            checks a pre-existing table and adds missing example titles. It preserves existing rows. Do
+                            not run a database reset.</li>
+                        <li>In <code>EF10_InventoryManager/appsettings.json</code>, replace only
+                            <code>YOUR_SERVER</code> with the same instance as SSMS. Keep the Inventory database name.
+                        </li>
+                        <li>Run the starter. It prints a TODO instruction and makes no database request yet.</li>
+                    </ol>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Terminal · solution folder</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>dotnet restore EF10InventoryManager.sln
+dotnet build EF10InventoryManager.sln
+dotnet run --project EF10_InventoryManager</code></pre>
+                    </div>
+                    <div class="code-shell">
+                        <div class="code-head"><span>appsettings.json · TODO 00</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>{
+  &quot;ConnectionStrings&quot;: {
+    &quot;InventoryDbConnection&quot;: &quot;Server=YOUR_SERVER;Database=InventoryManagerDB_0302;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;Connect Timeout=10;&quot;
+  }
+}</code></pre>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>JSON needs escaped backslashes</strong>
+                            <p>A server shown in SSMS as <code>.\SQLEXPRESS</code> must be written as
+                                <code>.\\SQLEXPRESS</code> in JSON. <code>Integrated Security=True</code> uses your
+                                Windows account. For SQL authentication, use your instructor’s local connection string
+                                through <code>DBM_EF_CONNECTION</code>; keep passwords out of submissions. The
+                                certificate trust switch is for the local classroom instance.
+                            </p>
+                        </div>
+                    </aside>
+                    <h2>The starting table</h2>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">SQL column</th>
+                                    <th scope="col">Definition</th>
+                                    <th scope="col">Meaning</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Id</td>
+                                    <td>int IDENTITY(1,1), primary key, not null</td>
+                                    <td>SQL Server generates IDs when rows are inserted.</td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>nvarchar(100), not null</td>
+                                    <td>A required Unicode movie title, up to 100 characters.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>Fresh setup inserts: Top Gun, Star Wars, Star Trek, The Godfather, and The Lord of the Rings: The
+                        Fellowship of the Ring. Existing IDs or extra records can differ. After setup, use <a
+                            href="downloads/verify-inventory.sql" download>verify-inventory.sql</a> for read-only
+                        comparison.</p>
+                    <details class="s2-details">
+                        <summary>Version and book adaptations</summary>
+                        <div class="reveal">
+                            <p>The supplied book projects target <code>net10.0</code> and pin EF packages to
+                                <code>10.0.0</code>. Their migration snapshots contain earlier preview/RC version
+                                strings. Our starter uses <code>Microsoft.EntityFrameworkCore.SqlServer 10.0.14</code>,
+                                <code>Microsoft.Extensions.Configuration.Json 10.0.14</code> and
+                                <code>System.Security.Cryptography.Pkcs 10.0.13</code>; it does not copy those snapshots
+                                or migration tooling.
+                            </p>
+                            <p>The <i>EF Core in Action</i> second edition explains the concepts using an older EF Core
+                                generation. Use its explanations, but run the supplied .NET 10 code. The original book
+                                host, factories, automatic seeding and SaveChanges are outside this first read-only
+                                practical.</p>
+                        </div>
+                    </details>
+                    <details class="s2-details s4-code-guide">
+                        <summary>Explore the supplied project files and setup scripts</summary>
+                        <div class="reveal">
+                            <p class="small">Choose a line to see what it does, why it exists and its source. Use ↑ and
+                                ↓ within the code to move between lines.</p>
+                            <div class="s4-code-tour" data-s4-code-tour="support"></div>
+                        </div>
+                    </details><label class="check"><input type="checkbox" data-save="setup-ready"
+                            id="s4-setup-ready"><span>The starter builds, the Inventory database is ready, and my server
+                            setting matches SSMS.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="2">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-3" aria-labelledby="s4-title-3" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 04 / 08 · 18 MINUTES</span>
+                        <h1 id="s4-title-3" tabindex="-1">Build the Item entity</h1>
+                    </div>
+                    <div class="task-tag">ACTIVITY 01 · TODO 01</div>
+                    <div class="card s2-card">
+                        <h2>Describe one inventory item</h2>
+                        <p>Before EF can turn a row into an object, it needs an entity class. A <b>class</b> is a
+                            definition; an <b>object</b> is one instance created from it. A <b>property</b> holds a
+                            value on that object. A <b>method</b> performs an action.</p>
+                        <p>Our class needs two properties: an integer ID and a title. It does not need every concept in
+                            the framework.</p>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name in the lesson</th>
+                                    <th scope="col">What it is</th>
+                                    <th scope="col">Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item</td>
+                                    <td>Class/type definition</td>
+                                    <td>Describes the shape of an inventory item.</td>
+                                </tr>
+                                <tr>
+                                    <td>One loaded item</td>
+                                    <td>Object/instance</td>
+                                    <td>An object with Id = 3 and Name = "Star Trek".</td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Property</td>
+                                    <td>Read it using item.Name.</td>
+                                </tr>
+                                <tr>
+                                    <td>ToListAsync()</td>
+                                    <td>Method call</td>
+                                    <td>Execute a query asynchronously and collect its results.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="prediction"><label for="s4-entity-prediction"><b>Predict before you run</b> · Will
+                            writing the Item class itself create the Items table or fetch rows?</label><textarea
+                            id="s4-entity-prediction" data-save="entity-prediction" rows="3"
+                            placeholder="Write a short prediction…"></textarea><small>Saved on this device. Compare your
+                            prediction with the result.</small></div>
+                    <h2>Understand DataAnnotations before copying them</h2>
+                    <p><code>System.ComponentModel.DataAnnotations</code> is a .NET namespace containing attribute
+                        classes. In our model, <code>RequiredAttribute</code> and <code>StringLengthAttribute</code>
+                        describe <code>Name</code>. C# allows the short forms <code>[Required]</code> and
+                        <code>[StringLength(100)]</code>. Validation frameworks can also use these attributes, but this
+                        Console app does not call an automatic input validator.
+                    </p>
+                    <div class="s4-annotation-lab card s2-card">
+                        <h3>Click a part of the model</h3>
+                        <div class="actions" role="group" aria-label="Explain model annotations"><button type="button"
+                                class="s2-btn primary" data-s4-annotation="namespace" aria-pressed="true">using
+                                DataAnnotations</button><button type="button" class="s2-btn"
+                                data-s4-annotation="required" aria-pressed="false">[Required]</button><button
+                                type="button" class="s2-btn" data-s4-annotation="length"
+                                aria-pressed="false">[StringLength(100)]</button><button type="button" class="s2-btn"
+                                data-s4-annotation="initial" aria-pressed="false">= &quot;&quot;</button></div>
+                        <div id="s4-annotation-detail" class="s4-live-explanation" role="status" aria-live="polite">
+                        </div>
+                    </div>
+                    <h2>Your task</h2>
+                    <p>Open <code>EF10_InventoryModels/Item.cs</code>. <b>Between TODO 01 START and END, replace the
+                            comment with the two properties below.</b> Keep the namespace, using statement, class and
+                        braces.</p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Insert inside public class Item · TODO 01</span><button
+                                class="copy copy-btn" type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>public int Id { get; set; }
+
+[Required]
+[StringLength(100)]
+public string Name { get; set; } = "";</code></pre>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Read it as</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>public int Id</td>
+                                    <td>A publicly accessible whole-number property named Id.</td>
+                                </tr>
+                                <tr>
+                                    <td>{ get; set; }</td>
+                                    <td>Other code can read and assign this property.</td>
+                                </tr>
+                                <tr>
+                                    <td>public string Name</td>
+                                    <td>A text property named Name.</td>
+                                </tr>
+                                <tr>
+                                    <td>= ""</td>
+                                    <td>Start with an empty string rather than null. This is not a movie title or a
+                                        database default.</td>
+                                </tr>
+                                <tr>
+                                    <td>[Required]</td>
+                                    <td>Mark Name as required in the EF model. For a relational schema this means a
+                                        non-nullable column.</td>
+                                </tr>
+                                <tr>
+                                    <td>[StringLength(100)]</td>
+                                    <td>Give the model a maximum string length of 100; the SQL Server mapping
+                                        corresponds to nvarchar(100).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>A key identifies the entity</strong>
+                            <p>By convention, EF Core recognises <code>Id</code> (or <code>ItemId</code>) as the primary
+                                key. You do not need a <code>[Key]</code> attribute here. SQL Server’s identity column
+                                generates IDs for new rows; today we only read the IDs already stored.</p>
+                        </div>
+                    </aside>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>Mapping rules and input validation are different</strong>
+                            <p>EF Core reads these attributes as model metadata. They do not automatically reject an
+                                assignment in C#, validate every value before saving, or alter our existing table.
+                                <code>NOT NULL</code> also does not mean “non-empty text”. An application needs its own
+                                input validation; the database enforces its actual schema. With nullable reference types
+                                enabled, <code>string</code> is already required by convention; we retain
+                                <code>[Required]</code> to make the book’s intent visible.
+                            </p>
+                        </div>
+                    </aside>
+                    <details class="s2-details">
+                        <summary>Hint · keep properties inside the class</summary>
+                        <div class="reveal">
+                            <p>Do not paste another <code>class Item</code> inside the existing one. Leave
+                                <code>using System.ComponentModel.DataAnnotations;</code> at the top. It makes Required
+                                and StringLength available.
+                            </p>
+                        </div>
+                    </details>
+                    <details class="s2-details">
+                        <summary>Reference answer · complete Item.cs</summary>
+                        <div class="reveal">
+                            <div class="code-shell">
+                                <div class="code-head"><span>EF10_InventoryModels/Item.cs</span><button
+                                        class="copy copy-btn" type="button">Copy code</button></div>
+                                <pre tabindex="0"><code>using System.ComponentModel.DataAnnotations;
+
+namespace EF10_InventoryModels;
+
+public class Item
+{
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; } = &quot;&quot;;
+}</code></pre>
+                            </div>
+                        </div>
+                    </details>
+                    <details class="s2-details s4-code-guide">
+                        <summary>Explore every line of the complete Item.cs</summary>
+                        <div class="reveal">
+                            <p class="small">Choose a line to see what it does, why it exists and its source. Use ↑ and
+                                ↓ within the code to move between lines.</p>
+                            <div class="s4-code-tour" data-s4-code-tour="item"></div>
+                        </div>
+                    </details>
+                    <h3>Run and observe</h3>
+                    <p>Build the solution again. The program still shows its next TODO instruction. Defining the class
+                        has not opened a connection, created a table or fetched data.</p><label class="check"><input
+                            type="checkbox" data-save="entity-built" id="s4-entity-built"><span>Item.cs builds; I can
+                            identify the class, its two properties and its key.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="3">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-4" aria-labelledby="s4-title-4" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 05 / 08 · 12 MINUTES</span>
+                        <h1 id="s4-title-4" tabindex="-1">Configure the context</h1>
+                    </div>
+                    <div class="task-tag">ACTIVITY 02 · TODOs 02–03</div>
+                    <div class="card s2-card">
+                        <h2>Give the app a database session</h2>
+                        <p><code>InventoryDbContext</code> is our class derived from EF Core’s <code>DbContext</code>. A
+                            context coordinates the model, provider and database work during this short run.</p>
+                        <p><code>DbSet&lt;Item&gt;</code> is the context’s query entry point for Item entities. It is
+                            not an already loaded list of all rows.</p>
+                    </div>
+                    <h2>TODO 02 · expose Items</h2>
+                    <p>Open <code>EF10_InventoryDBLibrary/InventoryDBContext.cs</code>. Replace the comment between TODO
+                        02 START and END with this property. Keep it inside the class, after the supplied constructor.
+                    </p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>InventoryDBContext.cs · TODO 02</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>public DbSet&lt;Item&gt; Items { get; set; }</code></pre>
+                    </div>
+                    <p><code>&lt;Item&gt;</code> means “for the Item type”. <code>Items</code> is the property name used
+                        by our query. By convention it maps to the table named Items; the properties map to Id and Name
+                        columns. EF Core initialises this DbSet property when the context is created.</p>
+                    <details class="s2-details">
+                        <summary>The supplied constructor, gently</summary>
+                        <div class="reveal">
+                            <p><code>InventoryDbContext : DbContext</code> means our class builds on EF Core’s base
+                                class. The constructor has the same name as the class. Its
+                                <code>DbContextOptions&lt;InventoryDbContext&gt;</code> parameter carries this context’s
+                                configuration; <code>: base(options)</code> passes it to EF Core. Keep this supplied
+                                code as it is.
+                            </p>
+                        </div>
+                    </details>
+                    <details class="s2-details s4-code-guide">
+                        <summary>Explore every line of InventoryDBContext.cs</summary>
+                        <div class="reveal">
+                            <p class="small">Choose a line to see what it does, why it exists and its source. Use ↑ and
+                                ↓ within the code to move between lines.</p>
+                            <div class="s4-code-tour" data-s4-code-tour="context"></div>
+                        </div>
+                    </details>
+                    <h2>TODO 03 · choose the SQL Server provider</h2>
+                    <p>In <code>EF10_InventoryManager/Program.cs</code>, replace the instruction message between TODO 03
+                        START and END with this block. Keep it inside the existing <code>try</code> block.</p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Program.cs · TODO 03</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>var optionsBuilder = new DbContextOptionsBuilder&lt;InventoryDbContext&gt;();
+optionsBuilder.UseSqlServer(connectionString);
+using var db = new InventoryDbContext(optionsBuilder.Options);
+Console.WriteLine("EF Core configured. No query has run yet.");</code></pre>
+                    </div>
+
+
+
+
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Line</th>
+                                    <th scope="col">Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>var optionsBuilder = new DbContextOptionsBuilder&lt;InventoryDbContext&gt;();</code>
+                                    </td>
+                                    <td>Create a configuration builder. var lets the compiler infer the type; new
+                                        creates an object.</td>
+                                </tr>
+                                <tr>
+                                    <td>optionsBuilder.UseSqlServer(connectionString);</td>
+                                    <td>Choose the EF Core SQL Server provider and supply the destination/authentication
+                                        settings.</td>
+                                </tr>
+                                <tr>
+                                    <td>using var db = new InventoryDbContext(optionsBuilder.Options);</td>
+                                    <td>Create the context from those options. using disposes its resources at the end
+                                        of this block.</td>
+                                </tr>
+                                <tr>
+                                    <td>Console.WriteLine(...)</td>
+                                    <td>Report configuration, without claiming a successful database query.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h3>Two providers, different jobs</h3>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Component</th>
+                                    <th scope="col">Job here</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Microsoft.EntityFrameworkCore.SqlServer</td>
+                                    <td>EF Core provider: translates supported LINQ and applies SQL Server mapping
+                                        conventions.</td>
+                                </tr>
+                                <tr>
+                                    <td>Microsoft.Data.SqlClient</td>
+                                    <td>Underlying ADO.NET provider/driver: connections, commands and result reading.
+                                        The EF provider depends on it.</td>
+                                </tr>
+                                <tr>
+                                    <td>SQL Server</td>
+                                    <td>Executes the SQL against the actual database.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>Configure is not connect</strong>
+                            <p>The provider package is already referenced in the prepared database-library project; the
+                                Console receives it through its project reference. Constructing the context does not
+                                fetch rows. The first awaited query will verify the connection and table mapping.</p>
+                        </div>
+                    </aside>
+                    <details class="s2-details">
+                        <summary>If building a project without the prepared references</summary>
+                        <div class="reveal">
+                            <div class="code-shell">
+                                <div class="code-head"><span>Optional reference · not needed again in this
+                                        starter</span><button class="copy copy-btn" type="button">Copy code</button>
+                                </div>
+                                <pre
+                                    tabindex="0"><code>dotnet add EF10_InventoryDBLibrary package Microsoft.EntityFrameworkCore.SqlServer --version 10.0.14</code></pre>
+                            </div>
+                        </div>
+                    </details><label class="check"><input type="checkbox" data-save="context-ready"
+                            id="s4-context-ready"><span>I added Items and UseSqlServer; the run says “EF Core
+                            configured. No query has run yet.”</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="4">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-5" aria-labelledby="s4-title-5" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 06 / 08 · 16 MINUTES</span>
+                        <h1 id="s4-title-5" tabindex="-1">Run the first async query</h1>
+                    </div>
+                    <div class="task-tag">ACTIVITY 03 · TODO 04</div>
+                    <div class="card s2-card">
+                        <h2>Read the owner’s alphabetical list</h2>
+                        <p>The mapping and provider are ready. Now describe the report, fetch its rows and print the
+                            objects. LINQ means <b>Language Integrated Query</b>: query operations written in C#.</p>
+                    </div>
+                    <div class="prediction"><label for="s4-query-prediction"><b>Predict before you run</b> · Which movie
+                            should print first? How many items do you expect on the fresh setup?</label><textarea
+                            id="s4-query-prediction" data-save="query-prediction" rows="3"
+                            placeholder="Write a short prediction…"></textarea><small>Saved on this device. Compare your
+                            prediction with the result.</small></div>
+                    <h2>Implement one query</h2>
+                    <p>In <code>EF10_InventoryManager/Program.cs</code>, replace the comment between TODO 04 START and
+                        END with this block. Place it <b>after TODO 03, inside the same try block</b>. Keep the nested
+                        TODO 05 comments for the next step.</p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Program.cs · TODO 04</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>var query = db.Items.OrderBy(item =&gt; item.Name);
+
+// TODO 05 START - Insert the SQL preview here, BEFORE ToListAsync.
+// TODO 05 END
+
+List&lt;Item&gt; items = await query.ToListAsync();
+Console.WriteLine("ID | Item");
+foreach (Item item in items)
+{
+    Console.WriteLine($"{item.Id} | {item.Name}");
+}
+Console.WriteLine($"Items shown: {items.Count}");
+if (items.Count == 0)
+    Console.WriteLine("No items matched. Compare the same query in SSMS.");</code></pre>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">What it does and why</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>db.Items</td>
+                                    <td>Start a query for Item entities in the context.</td>
+                                </tr>
+                                <tr>
+                                    <td>OrderBy(item => item.Name)</td>
+                                    <td>Ask for ascending title order. Read the arrow as “for each item, use its Name as
+                                        the sort key”. item is a local parameter name, not a table name.</td>
+                                </tr>
+                                <tr>
+                                    <td>var query = ...</td>
+                                    <td>Store the query definition. This line does not fetch rows.</td>
+                                </tr>
+                                <tr>
+                                    <td>await query.ToListAsync()</td>
+                                    <td>Execute the query using the configured provider, wait without blocking the
+                                        thread during database I/O, and collect results as List&lt;Item&gt;.</td>
+                                </tr>
+                                <tr>
+                                    <td>List&lt;Item&gt; items</td>
+                                    <td>Hold the returned Item objects in a C# list.</td>
+                                </tr>
+                                <tr>
+                                    <td>foreach (Item item in items)</td>
+                                    <td>Visit each already loaded object in the list; this loop does not send another
+                                        query.</td>
+                                </tr>
+                                <tr>
+                                    <td>$"{item.Id} | {item.Name}"</td>
+                                    <td>String interpolation: place the object’s values into the output text.</td>
+                                </tr>
+                                <tr>
+                                    <td>items.Count</td>
+                                    <td>Read the number of objects in this list; it is not another database count query.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>One real awaited operation</strong>
+                            <p>Top-level statements let you write <code>await</code> without an explicit Main method.
+                                Async does not guarantee faster SQL and does not mean parallel queries. Await one
+                                operation before starting another on the same context.</p>
+                        </div>
+                    </aside>
+                    <details class="s2-details s4-code-guide">
+                        <summary>Explore every line of the completed Program.cs</summary>
+                        <div class="reveal">
+                            <p class="small">Choose a line to see what it does, why it exists and its source. Use ↑ and
+                                ↓ within the code to move between lines.</p>
+                            <div class="s4-code-tour" data-s4-code-tour="program"></div>
+                        </div>
+                    </details>
+                    <h2>Run → observe</h2>
+                    <p>Run the Console project again. On a fresh setup, expect:</p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Fresh-setup output · IDs can differ on an existing
+                                inventory</span><button class="copy copy-btn" type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>EF Core configured. No query has run yet.
+ID | Item
+3 | Star Trek
+2 | Star Wars
+4 | The Godfather
+5 | The Lord of the Rings: The Fellowship of the Ring
+1 | Top Gun
+Items shown: 5</code></pre>
+                    </div>
+                    <p>Compare with <code>SELECT Id, Name FROM dbo.Items ORDER BY Name;</code> in SSMS. If your database
+                        already contained items, extra rows and different IDs are valid. Title ordering follows SQL
+                        Server’s collation. Do not reset data to force the snapshot.</p>
+                    <details class="s2-details">
+                        <summary>Hint · no Items or ToListAsync?</summary>
+                        <div class="reveal">
+                            <p><code>Items</code> missing: check TODO 02 and its spelling. <code>ToListAsync</code>
+                                missing: check <code>using Microsoft.EntityFrameworkCore;</code> and package restore.
+                                <code>db</code> missing: complete TODO 03 first and keep both regions in the same try
+                                block.
+                            </p>
+                        </div>
+                    </details>
+                    <details class="s2-details">
+                        <summary>Reference answer · execution checkpoint</summary>
+                        <div class="reveal">
+                            <div class="code-shell">
+                                <div class="code-head"><span>Program.cs · TODOs 03–04 together</span><button
+                                        class="copy copy-btn" type="button">Copy code</button></div>
+                                <pre tabindex="0"><code>var optionsBuilder = new DbContextOptionsBuilder&lt;InventoryDbContext&gt;();
+optionsBuilder.UseSqlServer(connectionString);
+using var db = new InventoryDbContext(optionsBuilder.Options);
+Console.WriteLine("EF Core configured. No query has run yet.");
+
+var query = db.Items.OrderBy(item =&gt; item.Name);
+
+// TODO 05 START - Insert the SQL preview here, BEFORE ToListAsync.
+// TODO 05 END
+
+List&lt;Item&gt; items = await query.ToListAsync();
+Console.WriteLine("ID | Item");
+foreach (Item item in items)
+{
+    Console.WriteLine($"{item.Id} | {item.Name}");
+}
+Console.WriteLine($"Items shown: {items.Count}");
+if (items.Count == 0)
+    Console.WriteLine("No items matched. Compare the same query in SSMS.");</code></pre>
+                            </div>
+                        </div>
+                    </details>
+                    <div class="prediction"><label for="s4-query-observation"><b>Predict before you run</b> · What
+                            actually happened? Explain any difference from your prediction.</label><textarea
+                            id="s4-query-observation" data-save="query-observation" rows="3"
+                            placeholder="Write a short prediction…"></textarea><small>Saved on this device. Compare your
+                            prediction with the result.</small></div><label class="check"><input type="checkbox"
+                            data-save="query-ran" id="s4-query-ran"><span>My real C# query ran, and its titles/count
+                            agree with the matching SELECT in SSMS.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="5">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-6" aria-labelledby="s4-title-6" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 07 / 08 · 8 MINUTES</span>
+                        <h1 id="s4-title-6" tabindex="-1">Follow the SQL and objects</h1>
+                    </div>
+                    <div class="task-tag">ACTIVITY 04 · TODO 05</div>
+                    <div class="card s2-card">
+                        <h2>SQL still does the database work</h2>
+                        <p>The query is written in C#, but SQL Server receives SQL. Inspecting it connects this new code
+                            to the SELECT statements you already understand.</p>
+                    </div>
+                    <h2>Show the preview before execution</h2>
+                    <p>In <code>Program.cs</code>, insert the next two lines <b>between TODO 05 START and END, before
+                            <code>ToListAsync</code></b>. Do not move the execution line.</p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Program.cs · TODO 05</span><button class="copy copy-btn"
+                                type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>Console.WriteLine("SQL preview (debugging; no rows fetched):");
+Console.WriteLine(query.ToQueryString());</code></pre>
+                    </div>
+                    <p><code>ToQueryString()</code> creates a debugging representation of the generated SQL. It does
+                        <b>not fetch rows</b>. It is not a record of an executed command, and its text is not guaranteed
+                        to be directly executable. Alias names and formatting may vary.
+                    </p>
+                    <div class="code-shell">
+                        <div class="code-head"><span>Illustrative SQL preview · compare with your actual
+                                output</span><button class="copy copy-btn" type="button">Copy code</button></div>
+                        <pre tabindex="0"><code>SELECT [i].[Id], [i].[Name]
+FROM [Items] AS [i]
+ORDER BY [i].[Name]</code></pre>
+                    </div>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">SQL piece</th>
+                                    <th scope="col">C# connection</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SELECT [i].[Id], [i].[Name]</td>
+                                    <td>The two mapped Item properties become selected columns.</td>
+                                </tr>
+                                <tr>
+                                    <td>FROM [Items] AS [i]</td>
+                                    <td>Items is the mapped table; i is a generated SQL alias.</td>
+                                </tr>
+                                <tr>
+                                    <td>ORDER BY [i].[Name]</td>
+                                    <td>The OrderBy operation asks SQL Server to sort the rows.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="sim-box" id="s4-simulator">
+                        <div class="sim-heading"><span class="eyebrow">PROCESS EXPLORER</span>
+                            <h2>Simulated database</h2>
+                        </div>
+                        <p>A fixed fresh-setup snapshot of the five book titles. This JavaScript illustration does not
+                            run EF Core, compile C# or connect to SQL Server.</p><label for="s4-sim-mode">Query to
+                            trace</label><select id="s4-sim-mode">
+                            <option value="all">All titles, ordered by Name</option>
+                            <option value="star">Only titles starting with Star</option>
+                            <option value="empty">Only titles starting with Z</option>
+                        </select>
+                        <ol class="stages" id="s4-sim-stages"></ol>
+                        <div class="sim-detail" id="s4-sim-detail" aria-live="polite"></div>
+                        <div class="sim-controls"><button class="button secondary s2-btn" id="s4-sim-back">Previous
+                                stage</button><button class="button s2-btn primary" id="s4-sim-next">Next
+                                stage</button><button class="text-button" id="s4-sim-reset">Restart trace</button></div>
+                        <p class="small">Each restart represents a new context and one entity query. For clarity,
+                            execution, row reading and materialisation are separated into teaching stages; the real
+                            implementation processes results as they are read. This illustration does not model caching,
+                            timing or tracking internals.</p>
+                    </div>
+                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
+                            alt="" width="64" height="64">
+                        <div class="s2-note__content"><strong>Rows become entity objects</strong>
+                            <p>For this first query in a new context, EF Core reads returned values and creates Item
+                                objects. This is called materialisation. An Item object is not a database row stored
+                                inside C#: it is an object containing values read from that row. Related objects are not
+                                automatically all loaded; our model has no relationships.</p>
+                        </div>
+                    </aside>
+                    <h3>Run → compare → explain</h3>
+                    <p>Run again. Your SQL preview should appear before the item list. Point to the line that fetched
+                        rows and explain why printing the preview alone would not prove the database is reachable.</p>
+                    <label class="check"><input type="checkbox" data-save="sql-inspected" id="s4-sql-inspected"><span>I
+                            can connect SELECT/FROM/ORDER BY to the entity, DbSet and query, and identify ToListAsync as
+                            the execution line.</span></label>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="6">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next>Next →</button></div>
+                    </footer>
+                </section>
+                <section class="lesson" id="s4-panel-7" aria-labelledby="s4-title-7" hidden>
+                    <div class="panel-head"><span class="section-kicker">STEP 08 / 08 · 8 MINUTES</span>
+                        <h1 id="s4-title-7" tabindex="-1">Review, practise and submit</h1>
+                    </div>
+                    <div class="card s2-card">
+                        <h2>What you can now explain and implement</h2>
+                        <p>You have mapped a two-property entity, exposed it through a context, configured the SQL
+                            Server provider and run a real asynchronous entity query. You can identify the SQL and the
+                            point at which rows become objects.</p>
+                        <p><b>Next:</b> build on this Inventory model with insert/update/delete, SaveChanges and
+                            introductory change tracking, then migrations in the syllabus’s Week 3 block. Later LINQ
+                            lessons expand filtering/projection and async, followed by relationships and loading. The
+                            two schema workflows were introduced conceptually today; running scaffolding or migrations
+                            belongs to later practice.</p>
+                    </div>
+                    <h2>Independent practice · 3 minutes here, finish after class if needed</h2>
+                    <p>The owner now asks: “Show only titles starting with Star.” Change only the query definition, keep
+                        ordering and the existing execution/display code.</p>
+                    <div class="prediction"><label for="s4-practice-prediction"><b>Predict before you run</b> · Which
+                            titles and count should remain? Then predict a prefix of Z.</label><textarea
+                            id="s4-practice-prediction" data-save="practice-prediction" rows="3"
+                            placeholder="Write a short prediction…"></textarea><small>Saved on this device. Compare your
+                            prediction with the result.</small></div>
+                    <details class="s2-details">
+                        <summary>Hint · filter before executing</summary>
+                        <div class="reveal">
+                            <p>Add <code>.Where(item =&gt; item.Name.StartsWith("Star"))</code> before
+                                <code>.OrderBy(...)</code>. Read it as “keep items whose Name starts with Star”. Compare
+                                with <code>WHERE Name LIKE N'Star%'</code> in SSMS.
+                            </p>
+                        </div>
+                    </details>
+                    <details class="s2-details">
+                        <summary>Reference answer · independent practice</summary>
+                        <div class="reveal">
+                            <div class="code-shell">
+                                <div class="code-head"><span>C#</span><button class="copy copy-btn" type="button">Copy
+                                        code</button></div>
+                                <pre tabindex="0"><code>var query = db.Items
+    .Where(item =&gt; item.Name.StartsWith(&quot;Star&quot;))
+    .OrderBy(item =&gt; item.Name);</code></pre>
+                            </div>
+                            <p>Fresh setup: Star Trek and Star Wars, two items. Replace Star with Z to get zero matches
+                                on the fresh setup. The loop runs zero times; the count is 0 and the no-match message
+                                prints. Restore the main report before submission. This small preview of Where is not
+                                the full later LINQ lesson.</p>
+                        </div>
+                    </details>
+                    <h2>Practical exit check · 3 minutes</h2>
+                    <p>Close the reference answers. Show your partner/instructor the entity key, DbSet, provider and
+                        execution line. Run the Star query and compare it with SSMS; explain the result in one sentence.
+                        Use the remaining two minutes to complete the review check and record your evidence.</p>
+                    <div class="quiz" id="s4-exit"></div><label class="check"><input type="checkbox"
+                            data-save="exit-demo" id="s4-exit-demo"><span>I demonstrated a changed query, compared it
+                            with SSMS and explained the execution line without reading the reference
+                            answer.</span></label>
+                    <div class="card s2-card">
+                        <h2>Submit one ZIP</h2>
+                        <p>Name it <code>DB3_S04_YourName.zip</code>. Include the solution,
+                            <code>Directory.Build.props</code>, all three project folders with .cs/.csproj files,
+                            password-free appsettings.json, <code>evidence.md</code> and Console/SSMS screenshots.
+                        </p>
+                        <p>In the evidence file, record predictions, actual results, SQL preview, the Star and
+                            zero-match variations, and the short concept explanations. Exclude <code>bin</code>,
+                            <code>obj</code>, <code>.vs</code> and credentials.
+                        </p>
+                        <div class="button-row actions"><a class="button secondary s2-btn" href="downloads/evidence.md"
+                                download>↓ Evidence template</a><button class="button secondary s2-btn" id="s4-export">↓
+                                Export my codelab notes</button></div>
+                        <p class="small">Exported codelab notes contain your local predictions/checks. Add real C# and
+                            SSMS evidence to complete the submission.</p>
+                    </div>
+                    <h2>Troubleshooting</h2>
+                    <div class="table-wrap s2-table-wrap" tabindex="0" role="region"
+                        aria-label="Scrollable reference table">
+                        <table class="s2-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Symptom</th>
+                                    <th scope="col">Check / action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>NETSDK1045 / unsupported net10.0</td>
+                                    <td>Install/select the .NET 10 SDK and Visual Studio with .NET 10 support. SSMS does
+                                        not install that SDK.</td>
+                                </tr>
+                                <tr>
+                                    <td>NuGet restore fails</td>
+                                    <td>Check connectivity and NuGet.org package source; restore the solution before
+                                        class. Do not mix EF major versions.</td>
+                                </tr>
+                                <tr>
+                                    <td>appsettings.json missing / invalid JSON</td>
+                                    <td>Keep its CopyToOutputDirectory entry; use valid quoted JSON and escape
+                                        backslashes. Rebuild after editing.</td>
+                                </tr>
+                                <tr>
+                                    <td>No database provider configured</td>
+                                    <td>Check UseSqlServer and that optionsBuilder.Options is passed into the context.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Entity requires a primary key</td>
+                                    <td>Complete Item.Id and the DbSet. Do not convert the entity to keyless to hide the
+                                        error.</td>
+                                </tr>
+                                <tr>
+                                    <td>Items / Name / db not found at compile time</td>
+                                    <td>Follow TODO order, exact spelling, namespaces and insertion locations. Keep
+                                        Program code inside try.</td>
+                                </tr>
+                                <tr>
+                                    <td>Network/instance error, login failed or database unavailable</td>
+                                    <td>Connect to the same server/database in SSMS. Check instance service,
+                                        authentication and access. Run setup once if not yet provisioned.</td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate chain not trusted</td>
+                                    <td>For the local classroom instance only, check
+                                        Encrypt=True;TrustServerCertificate=True. Production should use a trusted
+                                        certificate.</td>
+                                </tr>
+                                <tr>
+                                    <td>Invalid object name Items / invalid column</td>
+                                    <td>Confirm InventoryManagerDB_0302, then inspect the two-column schema. Do not add
+                                        migrations as a quick fix.</td>
+                                </tr>
+                                <tr>
+                                    <td>Zero items / different IDs / extra rows</td>
+                                    <td>Use the same SELECT in SSMS. Existing records are preserved; filtered queries
+                                        can legitimately return none.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="s4-sources">
+                        <h2>Resources</h2>
+                        <h3>Books</h3>
+                        <ul>
+                            <li><b>Practical Entity Framework Core 10</b>, Brian Gorman — Activities 01-01 and 03-02.
+                            </li>
+                            <li><b>EF Core in Action</b>, Jon P. Smith, 2nd edition — Chapter 1.</li>
+                        </ul>
+                        <h3>Microsoft documentation</h3>
+                        <ul>
+                            <li><a href="https://learn.microsoft.com/en-us/ef/core/providers/sql-server/">SQL Server
+                                    provider</a></li>
+                            <li><a href="https://learn.microsoft.com/en-us/ef/core/managing-schemas/">Code First and
+                                    Database First</a></li>
+                            <li><a href="https://learn.microsoft.com/en-us/ef/core/modeling/entity-properties">Entity
+                                    properties and annotations</a></li>
+                            <li><a href="https://learn.microsoft.com/en-us/ef/core/miscellaneous/async">Asynchronous
+                                    queries</a></li>
+                            <li><a
+                                    href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.entityframeworkqueryableextensions.toquerystring">Viewing
+                                    generated SQL</a></li>
+                        </ul>
+                    </div>
+                    <h2>Downloads</h2>
+                    <div class="button-row actions"><a class="button s2-btn primary"
+                            href="downloads/EF10_Session04_Student_Starter.zip" download>↓ Student starter</a><a
+                            class="button secondary s2-btn" href="downloads/setup-inventory.sql" download>↓ Inventory
+                            setup SQL</a><a class="button secondary s2-btn" href="downloads/verify-inventory.sql"
+                            download>↓ Read-only comparison SQL</a><a class="button secondary s2-btn"
+                            href="downloads/CODE-EXPLAINED.md" download>↓ Code explanation guide</a></div>
+                    <footer class="step-footer"><button class="button secondary s2-btn" data-prev>← Previous</button>
+                        <div class="step-actions"><button class="button s2-btn primary" data-complete="7">✓ Mark step
+                                complete</button><button class="button secondary s2-btn" data-next disabled>Next
+                                →</button></div>
+                    </footer>
+                </section>
+                <p class="page-foot">TVET Interactive Codelab Studio · DBM Session 04 · Book-based classroom adaptation
+                </p>
+            </main>
+        </div>
+    </div>
+    <div id="s4-toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="s4-reset-dialog">
+        <h2>Reset Session 04?</h2>
+        <p>This clears this session’s local completion, quiz answers, predictions and checkboxes. It does not change any
+            SQL Server database.</p>
+        <div class="button-row actions"><button class="button secondary s2-btn" id="s4-cancel-reset">Keep my
+                progress</button><button class="button s2-btn primary" id="s4-confirm-reset">Reset Session 04</button>
+        </div>
+    </dialog><noscript>
+        <div class="noscript">Enable JavaScript for navigation, quizzes, simulation and progress. All lesson sections
+            are shown below.</div>
+        <style>
+            .s4 .lesson[hidden] {
+                display: block
+            }
+
+            .s4 .sidebar {
+                display: none
+            }
+
+            .s4 .workspace {
+                margin-left: 0
+            }
+        </style>
+    </noscript>
+</body>
+
+</html>

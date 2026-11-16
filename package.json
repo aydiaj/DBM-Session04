@@ -1,0 +1,7 @@
+{
+  "name": "dbm-session04",
+  "private": true,
+  "scripts": {
+    "test": "node tests/simulation.test.cjs"
+  }
+}

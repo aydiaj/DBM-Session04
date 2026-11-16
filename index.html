@@ -254,12 +254,66 @@
                         <p class="small">EF builds mapping metadata from the model and configuration. Creating the model
                             does not check or change our existing database schema. It must match the prepared table.</p>
                     </article>
+                    <aside class="teacher-note s2-note">
+    <img class="s2-note__mascot"
+         src="images/db-mascot-teacher.webp"
+         alt="" width="64" height="64">
+
+    <div class="s2-note__content">
+        <strong>How does EF Core know which table and columns to use?</strong>
+
+        <p>
+            EF Core uses <b>naming conventions</b> unless we configure
+            a different mapping. In this example:
+        </p>
+
+        <ul>
+            <li>
+                <code>DbSet&lt;Item&gt; Items</code> exposes the
+                <code>Item</code> entity type. The property name
+                <code>Items</code> supplies the table name.
+            </li>
+            <li>
+                The entity properties <code>Id</code> and
+                <code>Name</code> map to columns with those same names.
+            </li>
+            <li>
+                The class can be named <code>Item</code> while the table
+                is named <code>Items</code>. EF Core is using the DbSet
+                property name here; it is not automatically pluralising
+                the class name.
+            </li>
+        </ul>
+
+        <p>
+            <b>For this activity, preserve the names
+            <code>Items</code>, <code>Id</code> and <code>Name</code></b>
+            so the default mapping matches the prepared SQL table.
+            Renaming something in C# alone does not rename it in SQL Server.
+        </p>
+
+        <p>
+            Different names are allowed when we configure them explicitly,
+            using <code>[Table]</code> and <code>[Column]</code> attributes,
+            or <code>ToTable()</code> and <code>HasColumnName()</code>
+            in the context configuration.
+        </p>
+
+        <p>
+            EF Core builds this mapping from our code and configuration.
+            It does not automatically inspect the existing database
+            and discover which table or column we intended.
+        </p>
+    </div>
+</aside>
                     <div class="prediction"><label for="s4-mapping-prediction"><b>Explain the mapping</b> <br> · Select
                             a row in the trace below. Which property receives each column value? Identify the ADO.NET
                             assignment lines that EF Core replaces with model-based mapping.</label><textarea
                             id="s4-mapping-prediction" data-save="mapping-prediction" rows="3"
                             placeholder="Explain the mapping in one sentence…"></textarea><small>Saved on this device.
-                            Compare your explanation with the trace.</small></div>
+                            Compare your explanation with the trace.</small>
+                    
+                    </div>
                     <article class="s4-orm-lab card s2-card" aria-labelledby="s4-orm-lab-title">
                         <div class="s4-lab-heading"><span class="section-kicker">SELECT → TRACE → EXPLAIN</span>
                             <h2 id="s4-orm-lab-title">One row becomes one Item object</h2>

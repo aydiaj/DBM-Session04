@@ -105,15 +105,41 @@
                             prepared Console application that reads <code>dbo.Items</code> using EF Core and explains
                             the SQL it generates.</p>
                         <ul>
-                            <li>Distinguish ORM, EF Core and the providers, and compare Database First with Code First.
+                            <li>Distinguish ORM, EF Core, and the providers, and compare Database First with Code First.
                             </li>
                             <li>Define an <code>Item</code> with two mapped properties and identify its key.</li>
                             <li>Expose <code>DbSet&lt;Item&gt;</code>, configure <code>UseSqlServer</code> and retrieve
                                 a <code>List&lt;Item&gt;</code> asynchronously.</li>
-                            <li>Show generated SQL, compare the results with SSMS and explain when rows are fetched.
+                            <li>Show generated SQL, compare the results with SSMS, and explain when rows are fetched.
                             </li>
                         </ul>
                     </div>
+                    <div class="card s2-card">
+    <h2>Our practical roadmap</h2>
+                        <p>
+    <strong>Our starting point: Database First.</strong>
+    The database and <code>dbo.Items</code> table already exist.
+    In this activity, we write <code>Item</code> and
+    <code>InventoryDbContext</code> manually to match that schema.
+    With Code First, we would start with the C# model and use
+    migrations to create or update the database schema.
+</p>
+    <p>Follow the numbered road from setup to results.
+        Select the image to view it at full size.</p>
+
+    <a href="images/ef-core-query-roadmap.png"
+       target="_blank" rel="noopener">
+        <img
+            src="images/ef-core-query-roadmap.png"
+            alt="EF Core roadmap: prepare the database, define the entity
+                 and context, configure SQL Server, build and execute
+                 the query, create objects, display results and finish."
+            width="1600"
+            height="1240"
+            loading="lazy"
+            style="display: block; width: 100%; height: auto;">
+    </a>
+</div>
                     <h2>Recall before you build</h2>
                     <p>Answer all four questions, then check your answers. This is formative feedback; it does not lock
                         the lesson.</p>

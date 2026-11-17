@@ -1036,14 +1036,37 @@ Console.WriteLine("EF Core configured. No query has run yet.");</code></pre>
                             </tbody>
                         </table>
                     </div>
-                    <aside class="teacher-note s2-note"><img class="s2-note__mascot" src="images/db-mascot-teacher.webp"
-                            alt="" width="64" height="64">
-                        <div class="s2-note__content"><strong>Configure is not connect</strong>
-                            <p>The provider package is already referenced in the prepared database-library project; the
-                                Console receives it through its project reference. Constructing the context does not
-                                fetch rows. The first awaited query will verify the connection and table mapping.</p>
-                        </div>
-                    </aside>
+                   <aside class="teacher-note s2-note">
+    <img class="s2-note__mascot"
+         src="images/db-mascot-teacher.webp"
+         alt="" width="64" height="64">
+
+    <div class="s2-note__content">
+        <strong>Creating a context does not open a connection</strong>
+
+        <p>
+            Creating <code>InventoryDbContext</code> prepares EF Core
+            to work with our database. It does not open the connection.
+            Building a query with <code>db.Items.OrderBy(...)</code>
+            does not open it or fetch rows either.
+        </p>
+
+        <p>
+            When <code>ToListAsync()</code> executes, EF Core opens
+            the connection, reads the results into <code>Item</code>
+            objects and normally closes the connection when the
+            operation finishes.
+        </p>
+
+        <p>
+            <strong>The context can remain alive while its connection
+            is closed.</strong>
+            Printing the loaded <code>items</code> list does not send
+            another query. Our <code>using</code> declaration disposes
+            the context when the enclosing scope ends.
+        </p>
+    </div>
+</aside>
                     <details class="s2-details">
                         <summary>If building a project without the prepared references</summary>
                         <div class="reveal">
